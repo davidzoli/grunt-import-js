@@ -38,12 +38,15 @@ module.exports = function(grunt) {
                 grunt.log.error(grunt.log.wordlist(['@import file not found: ', filepath], {separator: '', color: 'red'}));
                 return '';
             } else {
-                var regexImport = /(?:\/\/)?\s*@import\s*(['"])(.*?\.js)\1\s*;/gi;
-
+                var regex = /(?:\/\/)?\s*@(import|skip)\s*(['"])(.*?\.js)\2\s*;/gi;
                 var str = grunt.file.read(filepath);
-
-                return str.replace(regexImport, function (str, p1, p2, offset) {
-                    return "\n" + getReplacedFileContent(options.importDir + p2) + "\n";
+                
+                return str.replace(regex, function (str, p1, p2, p3, offset) {
+                    var output = "\n";
+                    if (p1 === 'import') {
+                        output += getReplacedFileContent(options.importDir + p3) + "\n";
+                    }
+                    return output;
                 });
             }
         }
