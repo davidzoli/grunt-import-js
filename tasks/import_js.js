@@ -8,30 +8,26 @@
 
 'use strict';
 
-var path = require('path');
+const path = require('path');
+const findFile = require('find-file-in-folders')
 
 module.exports = function(grunt) {
 
     grunt.registerMultiTask('import_js', 'Import JS files within JS files by @import instruction.', function() {
-        var count = 0;
+        let count = 0;
 
         if (this.files.length > 0) {
-
-            var options = this.options({
-                importDir: this.files[0].orig.cwd
-            });
-
+            const includePaths = [this.files[0].orig.cwd, ...this.data.options.includePaths || []];
             this.files.forEach(function (file) {
                 file.src.map(function (filepath) {
-                    grunt.file.write(file.dest, getReplacedFileContent(filepath));
+                    grunt.file.write(file.dest, getReplacedFileContent(filepath, includePaths));
                     count++;
                 });
             });
-
             grunt.log.ok(count + ' files created.');
         }
 
-        function getReplacedFileContent(filepath) {
+        function getReplacedFileContent(filepath, includePaths) {
             filepath = path.resolve(filepath);
 
             if (!grunt.file.exists(filepath)) {
@@ -44,7 +40,13 @@ module.exports = function(grunt) {
                 return str.replace(regex, function (str, p1, p2, p3, offset) {
                     var output = "\n";
                     if (p1 === 'import') {
-                        output += getReplacedFileContent(options.importDir + p3) + "\n";
+                        const fileToReplace = findFile(p3, false, includePaths);
+                        if (!fileToReplace) {
+                          grunt.log.error(grunt.log.wordlist(['@import file not found: ', p3], {separator: '', color: 'red'}));
+                          return '';
+                        } else {
+                          output += getReplacedFileContent(fileToReplace, includePaths) + "\n";
+                        }
                     }
                     return output;
                 });

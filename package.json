@@ -1,7 +1,7 @@
 {
   "name": "grunt-import-js",
   "description": "Import JS files within JS files by @import instruction.",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "homepage": "https://github.com/dev113/grunt-import-js",
   "author": {
     "name": "Robbie Robke",
@@ -27,7 +27,8 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "grunt": "~0.4.0"
+    "grunt": "~0.4.0",
+    "find-file-in-folders": "^1.0.3",
   },
   "peerDependencies": {
     "grunt": ">=0.4.0"

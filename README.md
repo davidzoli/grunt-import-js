@@ -36,6 +36,14 @@ Optionally, you can comment out the instructions to keep your files executable w
 // @import "base.js"; 
 ```
 
+If you want to keep the import for some future use, use the @skip instruction. This won't import the file and will remove the instruction comment from the generated file.  
+Basically you can comment out the whole instruction with this.
+
+```js
+// @import "vendor/js/jquery/jquery.min.js"; 
+// @skip "vendor/js/bootstrap/bootstrap.min.js"; 
+// @import "base.js"; 
+```
 
 ### Overview
 In your project's Gruntfile, add a section named `import_js` to the data object passed into `grunt.initConfig()`. Usage Example below.
@@ -49,6 +57,28 @@ Default: files.cwd
 
 Specifies an alternate location for the @import files.
 
+#### includePaths
+Type: `Array`  
+Default: []
+
+Specifies an alternate locations for the @import files. You can add more folders to check for the file.
+
+```js
+options: {
+  includePaths: [
+      require('path').resolve(__dirname + '/../node_modules')
+  ]
+}
+```
+
+With this, the script will file the `bootstrap.js` file in the `node_modules/bootstrap/dist/js/` folder.  
+The file `base.js` will be found in the same folder as the includer file.
+
+```js
+// @import "bootstrap/dist/js/bootstrap.js"; 
+// @import "base.js"; 
+```
+
 
 ### Usage Examples
 
@@ -57,6 +87,11 @@ In this example, import-js is used to read all javascript files from `app/Resour
 ```js
 grunt.initConfig({
   import_js: {
+    options: {
+      includePaths: [
+        require('path').resolve(__dirname + '/../node_modules')
+      ]
+    },
     files: {
       expand: true,
       cwd: 'app/Resources/js/',
