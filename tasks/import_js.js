@@ -15,9 +15,10 @@ module.exports = function(grunt) {
 
     grunt.registerMultiTask('import_js', 'Import JS files within JS files by @import instruction.', function() {
         let count = 0;
+        const optionsIncludePaths = this.data.options && this.data.options.includePaths ? this.data.options.includePaths : [];
 
         if (this.files.length > 0) {
-            const includePaths = [this.files[0].orig.cwd, ...this.data.options.includePaths || []];
+            const includePaths = [this.files[0].orig.cwd, ...optionsIncludePaths];
             this.files.forEach(function (file) {
                 file.src.map(function (filepath) {
                     grunt.file.write(file.dest, getReplacedFileContent(filepath, includePaths));
