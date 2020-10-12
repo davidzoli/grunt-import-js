@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "grunt": "~0.4.0",
-    "find-file-in-folders": "^1.0.3",
+    "find-file-in-folders": "^1.0.3"
   },
   "peerDependencies": {
     "grunt": ">=0.4.0"
